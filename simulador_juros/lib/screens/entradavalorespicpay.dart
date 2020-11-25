@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:simulador_juros/src/calculoprestacao.dart';
+import 'package:flutter_masked_text/flutter_masked_text.dart';
 
 class EntradaValoresPicPay extends StatefulWidget {
   @override
@@ -8,7 +9,8 @@ class EntradaValoresPicPay extends StatefulWidget {
 }
 
 class _EntradaValoresPicPayState extends State<EntradaValoresPicPay> {
-  final TextEditingController _valorTotalController = TextEditingController();
+  final MoneyMaskedTextController _valorTotalController =
+      MoneyMaskedTextController(decimalSeparator: '.', thousandSeparator: '');
   List<Widget> parcelas = new List();
 
   List<Widget> retornarParcelas() {
@@ -32,11 +34,13 @@ class _EntradaValoresPicPayState extends State<EntradaValoresPicPay> {
                   child: Column(children: <Widget>[
                     Container(
                       width: double.infinity,
-                      child: Text('Valor Parcela: ${item.valorParcela.toStringAsFixed(2)}'),
+                      child: Text(
+                          'Valor Parcela: ${item.valorParcela.toStringAsFixed(2)}'),
                     ),
                     Container(
                       width: double.infinity,
-                      child: Text('Valor Total: ${item.valorTotal.toStringAsFixed(2)}'),
+                      child: Text(
+                          'Valor Total: ${item.valorTotal.toStringAsFixed(2)}'),
                     ),
                   ]),
                 ),
@@ -54,7 +58,7 @@ class _EntradaValoresPicPayState extends State<EntradaValoresPicPay> {
       if (calcular)
         parcelas = retornarParcelas();
       else
-        _valorTotalController.text = "";
+        _valorTotalController.text = "0.00";
       parcelas = retornarParcelas();
     });
   }
@@ -78,8 +82,10 @@ class _EntradaValoresPicPayState extends State<EntradaValoresPicPay> {
                 cursorColor: Colors.black,
                 style: TextStyle(color: Colors.white),
                 controller: _valorTotalController,
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
-                inputFormatters: [FilteringTextInputFormatter.deny(new RegExp('[-|,]'))],
+                keyboardType: TextInputType.number,
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp('[0-9]'))
+                ],
                 decoration: InputDecoration(
                   hintText: 'Valor Total',
                   hintStyle: TextStyle(color: Colors.white54),
